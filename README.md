@@ -1,16 +1,44 @@
 # flutter_geolocalizacao
 
-A new Flutter project.
+Projeto que implementa Geolocalização com Flutter
 
-## Getting Started
+## Orientações
 
-This project is a starting point for a Flutter application.
+Artigos:
+[https://alligator.io/flutter/geolocator-plugin/](https://alligator.io/flutter/geolocator-plugin/)
 
-A few resources to get you started if this is your first Flutter project:
+Plugin Flutter:
+[https://pub.dev/packages/geolocator](https://pub.dev/packages/geolocator)
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+O PASSO A PASSO DEVE VIR SEMPRE DA FONTE OFICIAL DO PLUGIN, mas abaixo segue o que foi preciso fazer na data em que este projeto foi feito.
+
+1) Adicionar as permissões:
+ANDROID:
+	Adicionar no Android Manifest:
+
+
+
+	<manifest ...
+		<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+        OU 
+        <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+    Diferença: ACCESS_FINE_LOCATION é mais preciso, e ACCESS_COARSE_LOCATION dá o resultado a nível de blocos de cidades.
+
+
+	    
+
+	  
+
+iOS:
+	1) Adicionar no Info.plist
+
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Este aplicativo precisa acessar sua localização quando estiver aberto.</string>
+	
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>Este aplicativo precisa acessar sua localização quando estiver em background</string>
+    
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Este aplicativo precisa acessar sua localização quando estiver em background</string>
