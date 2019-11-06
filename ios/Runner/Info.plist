@@ -41,5 +41,17 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+
+	<!--Permissões para acessar localização do usuário-->
+	<key>NSLocationWhenInUseUsageDescription</key>
+    <string>Este aplicativo precisa acessar sua localização quando estiver aberto.</string>
+	
+	<!--Permissões para acessar localização do usuário quando o app estiver em BACKGROUND -->
+	<key>NSLocationAlwaysUsageDescription</key>
+    <string>Este aplicativo precisa acessar sua localização quando estiver em background</string>
+    
+    <!--Permissões para acessar localização do usuário quando o app estiver ABERTO e EM BACKGROUND para iOS <= 10 -->
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Este aplicativo precisa acessar sua localização quando estiver aberto e em background</string>
 </dict>
 </plist>
