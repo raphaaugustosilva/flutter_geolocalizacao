@@ -25,8 +25,6 @@ ANDROID:
         <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     Diferença: ACCESS_FINE_LOCATION é mais preciso, e ACCESS_COARSE_LOCATION dá o resultado a nível de blocos de cidades.
-
-
 	    
 
 	  
