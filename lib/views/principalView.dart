@@ -1,12 +1,11 @@
 import 'dart:async';
-
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_geolocalizacao/helpers/geralHelper.dart';
 import 'package:flutter_geolocalizacao/models/geolocalizacao.dart';
 import 'package:flutter_geolocalizacao/helpers/geolocalizacaoHelper.dart';
-import 'package:intl/intl.dart';
 
 class PrincipalView extends StatefulWidget {
   @override
@@ -36,7 +35,7 @@ class _PrincipalViewState extends State<PrincipalView> {
   Placemark _localizacaoAtual;
 
   bool _carregandoBuscaCoordernadas = false;
-  Position _coordernadaASerBuscada;
+  //Position _coordernadaASerBuscada;
   Placemark _coordenadaBuscada;
 
   static double _latitudeDefault = -22.759162;
