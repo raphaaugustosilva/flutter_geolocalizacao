@@ -1,3 +1,5 @@
+import 'package:flutter_geolocalizacao/database/dadosMemoria.dart';
+
 enum AcessoGPSDeviceEnum { indisponivel, disponivel }
 enum AcessoGPSAplicativoEnum { negado, desabilitado, permitido, restrito, desconhecido }
 
@@ -12,12 +14,17 @@ enum PrecisaoLocalizacaoEnum { maisBaixa, baixa, media, alta, melhor, melhorPara
 enum MetodoLocalizacaoEnum { foreground, background, sempre }
 
 class GeolocacalizacaoOpcoesTempoReal {
-  final MetodoLocalizacaoEnum metodoLocalizacao;
-  final PrecisaoLocalizacaoEnum precisaoLocalizacao;
-  final int distanciaParaAtualizacao;
-  final int intervaloDeAtualizacaoMilissegundos; //APENAS PARA ANDROID, iOS NAO SUPORTA
+  MetodoLocalizacaoEnum metodoLocalizacao;
+  PrecisaoLocalizacaoEnum precisaoLocalizacao;
+  int distanciaParaAtualizacao;
+  int intervaloDeAtualizacaoMilissegundos; //APENAS PARA ANDROID, iOS NAO SUPORTA
 
   GeolocacalizacaoOpcoesTempoReal(this.metodoLocalizacao, this.precisaoLocalizacao, this.distanciaParaAtualizacao, {this.intervaloDeAtualizacaoMilissegundos = 0});
+
+  GeolocacalizacaoOpcoesTempoReal.dadosMemoria(this.distanciaParaAtualizacao, {this.intervaloDeAtualizacaoMilissegundos = 0}) {
+    this.precisaoLocalizacao = DadosMemoria.instancia.precisaoLocalizacao ?? this.precisaoLocalizacao;
+    this.metodoLocalizacao = DadosMemoria.instancia.metodoLocalizacao ?? this.metodoLocalizacao;
+  }
 }
 
 class Geolocacalizacao {}

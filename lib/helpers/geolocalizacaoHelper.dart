@@ -1,9 +1,17 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_geolocalizacao/models/geolocalizacao.dart';
+import 'package:flutter_geolocalizacao/database/dadosMemoria.dart';
 
 class GeolocalizacaoHelper {
-  GeolocalizacaoHelper._construtorPrivate();
-  static final instancia = GeolocalizacaoHelper._construtorPrivate();
+  PrecisaoLocalizacaoEnum precisaoLocalizacao = PrecisaoLocalizacaoEnum.alta;
+  MetodoLocalizacaoEnum metodoLocalizacao = MetodoLocalizacaoEnum.sempre;
+
+  GeolocalizacaoHelper({this.precisaoLocalizacao, this.metodoLocalizacao});
+
+  GeolocalizacaoHelper.dadosMemoria() {
+    this.precisaoLocalizacao = DadosMemoria.instancia.precisaoLocalizacao ?? this.precisaoLocalizacao;
+    this.metodoLocalizacao = DadosMemoria.instancia.metodoLocalizacao ?? this.metodoLocalizacao;
+  }
 
   final Geolocator _geolocator = Geolocator();
   Future<AcessoGPSDeviceEnum> verificaPermissaoDoDispositivoAcessoGPS() async {
@@ -50,20 +58,20 @@ class GeolocalizacaoHelper {
     }
   }
 
-  Future<Position> recuperarUltimaPosicaoConhecida({PrecisaoLocalizacaoEnum precisaoLocalizacao = PrecisaoLocalizacaoEnum.alta, MetodoLocalizacaoEnum metodoLocalizacao = MetodoLocalizacaoEnum.sempre}) async {
+  Future<Position> recuperarUltimaPosicaoConhecida() async {
     try {
-      return await _geolocator.getLastKnownPosition(desiredAccuracy: converteParaLocationAccuracy(precisaoLocalizacao), locationPermissionLevel: converteParaGeolocationPermission(metodoLocalizacao));
+      return await _geolocator.getLastKnownPosition(desiredAccuracy: converteParaLocationAccuracy(this.precisaoLocalizacao), locationPermissionLevel: converteParaGeolocationPermission(this.metodoLocalizacao));
     } catch (e) {
       print("Erro ao recuperarUltimaLocalizacaoConhecida. Detalhes: $e");
       return null;
     }
   }
 
-  Future<Position> recuperarPosicaoAtual({PrecisaoLocalizacaoEnum precisaoLocalizacao = PrecisaoLocalizacaoEnum.alta, MetodoLocalizacaoEnum metodoLocalizacao = MetodoLocalizacaoEnum.sempre}) async {
+  Future<Position> recuperarPosicaoAtual() async {
     try {
-      return await _geolocator.getCurrentPosition(desiredAccuracy: converteParaLocationAccuracy(precisaoLocalizacao), locationPermissionLevel: converteParaGeolocationPermission(metodoLocalizacao));
+      return await _geolocator.getCurrentPosition(desiredAccuracy: converteParaLocationAccuracy(this.precisaoLocalizacao), locationPermissionLevel: converteParaGeolocationPermission(this.metodoLocalizacao));
     } catch (e) {
-      print("Erro ao recuperarLocalizacaoAtual. Detalhes: $e");
+      print("Erro ao recuperarPosicaoAtual. Detalhes: $e");
       return null;
     }
   }
@@ -72,19 +80,41 @@ class GeolocalizacaoHelper {
     try {
       return await _geolocator.placemarkFromCoordinates(latitude, longitude, localeIdentifier: localizaoDeTraducao);
     } catch (e) {
-      print("Erro ao recuperarLocalizacaoAtual. Detalhes: $e");
+      print("Erro ao recuperarLocalizacaoDeUmaPosicao. Detalhes: $e");
       return null;
     }
   }
 
-  Stream<Position> recuperarPosicaoTempoReal(GeolocacalizacaoOpcoesTempoReal geolocacalizacaoOpcoesTempoReal) {
+  Future<List<Placemark>> recuperarLocalizacaoDeUmEndereco(String endereco, {String localizaoDeTraducao = "pt_BR"}) async {
     try {
-      var permissao = GeolocalizacaoHelper.instancia.converteParaGeolocationPermission(geolocacalizacaoOpcoesTempoReal.metodoLocalizacao);
-      return _geolocator.getPositionStream(converteParaLocationOptions(geolocacalizacaoOpcoesTempoReal), permissao);
+      return await _geolocator.placemarkFromAddress(endereco, localeIdentifier: localizaoDeTraducao);
     } catch (e) {
-      print("Erro ao recuperarPosicaoTempoReal. Detalhes: $e");
+      print("Erro ao recuperarPosicaoDeUmEndereco. Detalhes: $e");
       return null;
     }
+  }
+
+  Stream<Position> recuperarPosicaoEmTempoReal(GeolocacalizacaoOpcoesTempoReal geolocacalizacaoOpcoesTempoReal) {
+    try {
+      var permissao = converteParaGeolocationPermission(geolocacalizacaoOpcoesTempoReal.metodoLocalizacao);
+      return _geolocator.getPositionStream(converteParaLocationOptions(geolocacalizacaoOpcoesTempoReal), permissao);
+    } catch (e) {
+      print("Erro ao recuperarPosicaoEmTempoReal. Detalhes: $e");
+      return null;
+    }
+  }
+
+  Future<double> calcularDistanciaEntreCoordenadas(double latitudeInicial, double longitudeInicial, double latitudeFinal, double longitudeFinal) {
+    try {
+      return _geolocator.distanceBetween(latitudeInicial, longitudeInicial, latitudeFinal, longitudeFinal);
+    } catch (e) {
+      print("Erro ao calcularDistanciaEntreCoordenadas. Detalhes: $e");
+      return null;
+    }
+  }
+
+  String retornaNomeLocalizacao(Placemark localizacaoCompleta) {
+    return localizacaoCompleta == null ? "" : "${localizacaoCompleta?.thoroughfare ?? ""}, ${localizacaoCompleta?.subThoroughfare ?? ""}, ${localizacaoCompleta?.locality ?? ""} ${localizacaoCompleta?.subLocality ?? ""}, ${localizacaoCompleta?.administrativeArea ?? ""} ${localizacaoCompleta?.subAdministrativeArea ?? ""}, CEP: ${localizacaoCompleta?.postalCode ?? ""}, ${localizacaoCompleta?.country ?? ""}";
   }
 
   LocationAccuracy converteParaLocationAccuracy(PrecisaoLocalizacaoEnum precisaoLocalizacao) {

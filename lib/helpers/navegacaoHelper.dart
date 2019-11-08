@@ -1,13 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_geolocalizacao/views/principalView.dart';
+import 'package:flutter_geolocalizacao/views/localizacaoView.dart';
+import 'package:flutter_geolocalizacao/views/localizacaoTempoRealView.dart';
+import 'package:flutter_geolocalizacao/views/distanciaEntrePosicoesView.dart';
+import 'package:flutter_geolocalizacao/views/converterPosicaoELocalizacaoView.dart';
 
 class NavegacaoHelper {
   static const rotaRoot = "/";
   static const rotaPrincipal = "/principal";
-  
+  static const rotaConverterPosicaoELocalizacao = "/converterPosicaoELocalizacao";
+  static const rotaDistanciaEntrePosicoes = "/distanciaEntrePosicoes";
+  static const rotaLocalizacaoTempoReal = "/localizacaoTempoReal";
+  static const rotaLocalizacao = "/localizacao";
+
   static RouteFactory rotas() {
     return (settings) {
-      final Map<String, dynamic> parametros = settings.arguments;
+      //final Map<String, dynamic> parametros = settings.arguments;
       Widget viewEncontrada;
 
       switch (settings.name) {
@@ -18,6 +26,22 @@ class NavegacaoHelper {
         case rotaPrincipal:
           //File arquivoPDF = parametros != null ? parametros["arquivoPDF"] : null;
           viewEncontrada = PrincipalView();
+          break;
+
+        case rotaConverterPosicaoELocalizacao:
+          viewEncontrada = ConverterPosicaoELocalizacaoView();
+          break;
+
+        case rotaDistanciaEntrePosicoes:
+          viewEncontrada = DistanciaEntrePosicoesView();
+          break;
+
+        case rotaLocalizacaoTempoReal:
+          viewEncontrada = LocalizacaoTempoRealView();
+          break;
+
+        case rotaLocalizacao:
+          viewEncontrada = LocalizacaoView();
           break;
 
         default:
