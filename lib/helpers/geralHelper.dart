@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+enum ResultadoMensagemEnum { ok, cancelar }
+
 class GeralHelper {
   GeralHelper._construtorPrivate();
   static final instancia = GeralHelper._construtorPrivate();
@@ -34,6 +36,35 @@ class GeralHelper {
               child: Text("Fechar"),
               onPressed: () {
                 Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<ResultadoMensagemEnum> exibirMensagemAcaoUsuario(BuildContext context, String titulo, String mensagem, String textoBotaoOK, String textoBotaoCancelar) async {
+    // flutter defined function
+    return await showDialog<ResultadoMensagemEnum>(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        // return object of type Dialog
+        return AlertDialog(
+          title: Text(titulo),
+          content: Text(mensagem),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(textoBotaoCancelar),
+              onPressed: () {
+                Navigator.of(context).pop(ResultadoMensagemEnum.cancelar);
+              },
+            ),
+            FlatButton(
+              child: Text(textoBotaoOK),
+              onPressed: () {
+                Navigator.of(context).pop(ResultadoMensagemEnum.ok);
               },
             ),
           ],

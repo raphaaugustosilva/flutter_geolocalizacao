@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location_permissions/location_permissions.dart';
 import 'package:flutter_geolocalizacao/helpers/geralHelper.dart';
 import 'package:flutter_geolocalizacao/models/geolocalizacao.dart';
 import 'package:flutter_geolocalizacao/helpers/geolocalizacaoHelper.dart';
@@ -456,7 +457,22 @@ class _PrincipalViewState extends State<PrincipalView> {
   Future _verificaStatusAcessoGPS() async {
     setState(() => _carregandoAcessoGPS = true);
     _acessoGPSDevice = await GeolocalizacaoHelper.instancia.verificaPermissaoDoDispositivoAcessoGPS();
-    _acessoGPSAplicativo = await GeolocalizacaoHelper.instancia.verificaPermissaoDoAplicativoAcessoGPS();
+    if (_acessoGPSDevice == AcessoGPSDeviceEnum.disponivel) {
+      _acessoGPSAplicativo = await GeolocalizacaoHelper.instancia.verificaPermissaoDoAplicativoAcessoGPS();
+
+      if (_acessoGPSAplicativo != AcessoGPSAplicativoEnum.permitido) {
+        PermissionStatus permissaoAplicativo = await LocationPermissions().requestPermissions();
+        
+
+        if (permissaoAplicativo != PermissionStatus.granted && permissaoAplicativo != PermissionStatus.restricted) {
+          if (await GeralHelper.instancia.exibirMensagemAcaoUsuario(context, "Atenção", "Para usar este aplicativo, é necessário dar permissão para acessar sua localização.\nDeseja abrir as preferências de localizaçaão agora?", "Sim", "Não") == ResultadoMensagemEnum.ok) {
+            await LocationPermissions().openAppSettings();
+          }
+        }
+
+        _acessoGPSAplicativo = await GeolocalizacaoHelper.instancia.verificaPermissaoDoAplicativoAcessoGPS();
+      }
+    }
     setState(() {
       _acessoGPSString;
       _carregandoAcessoGPS = false;
