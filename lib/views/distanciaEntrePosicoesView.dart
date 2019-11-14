@@ -41,16 +41,21 @@ class _DistanciaEntrePosicoesViewState extends State<DistanciaEntrePosicoesView>
         centerTitle: true,
         backgroundColor: Colors.blueGrey,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: ListView(
-          children: <Widget>[
-            _constroiBlocoInput("Origem:", _controladorLatitudeInicial, _controladorLongitudeInicial, nomeLocalizacao: nomeLocalizacaoInicial),
-            SizedBox(height: 20),
-            _constroiBlocoInput("Destino:", _controladorLatitudeFinal, _controladorLongitudeFinal, nomeLocalizacao: nomeLocalizacaoFinal),
-            RaisedButton(child: Text("Calcular distância", style: TextStyle(color: Colors.white)), color: Colors.blueGrey, onPressed: carregando ? null : () => _calcularDistancia()),
-            carregando ? carregandoWidget(height: 40, width: 40) : _constroiResultado(),
-          ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: ListView(
+            children: <Widget>[
+              _constroiBlocoInput("Origem:", _controladorLatitudeInicial, _controladorLongitudeInicial, nomeLocalizacao: nomeLocalizacaoInicial),
+              SizedBox(height: 20),
+              _constroiBlocoInput("Destino:", _controladorLatitudeFinal, _controladorLongitudeFinal, nomeLocalizacao: nomeLocalizacaoFinal),
+              RaisedButton(child: Text("Calcular distância", style: TextStyle(color: Colors.white)), color: Colors.blueGrey, onPressed: carregando ? null : () => _calcularDistancia()),
+              carregando ? carregandoWidget(height: 40, width: 40) : _constroiResultado(),
+            ],
+          ),
         ),
       ),
     );
@@ -138,7 +143,7 @@ class _DistanciaEntrePosicoesViewState extends State<DistanciaEntrePosicoesView>
   Widget _constroiResultado() {
     var resultadoEmKm = (resultadoDistanciaMetros ?? 0) / 1000;
     String resultadoFormatado = resultadoEmKm.truncate() > 0 ? "${(resultadoEmKm?.truncate() ?? 0)} km" : "${(resultadoDistanciaMetros?.truncate() ?? 0)} metros";
-    
+
     return Container(
       alignment: Alignment.center,
       padding: EdgeInsets.only(top: 20),

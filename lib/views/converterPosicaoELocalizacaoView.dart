@@ -39,17 +39,27 @@ class _ConverterPosicaoELocalizacaoViewState extends State<ConverterPosicaoELoca
         centerTitle: true,
         backgroundColor: Colors.orange,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: ListView(
-          children: <Widget>[
-            _constroiBlocoConverterParaEndereco(),
-            RaisedButton(child: Text("Converter para endereço", style: TextStyle(color: Colors.black87)), color: Colors.orange, onPressed: carregando ? null : () => _converterParaEndereco()),
-            SizedBox(height: 50),
-            _constroiBlocoConverterParaCoordenadas(),
-            RaisedButton(child: Text("Converter para coordenadas", style: TextStyle(color: Colors.black87)), color: Colors.orange, onPressed: carregando ? null : () => _converterParaCoordenadas()),
-            carregando ? carregandoWidget(height: 40, width: 40) : SizedBox.shrink(),
-          ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            child: ListView(
+              children: <Widget>[
+                _constroiBlocoConverterParaEndereco(),
+                RaisedButton(child: Text("Converter para endereço", style: TextStyle(color: Colors.black87)), color: Colors.orange, onPressed: carregando ? null : () => _converterParaEndereco()),
+                SizedBox(height: 50),
+                _constroiBlocoConverterParaCoordenadas(),
+                RaisedButton(child: Text("Converter para coordenadas", style: TextStyle(color: Colors.black87)), color: Colors.orange, onPressed: carregando ? null : () => _converterParaCoordenadas()),
+                carregando ? carregandoWidget(height: 40, width: 40) : SizedBox.shrink(),
+              ],
+            ),
+          ),
         ),
       ),
     );

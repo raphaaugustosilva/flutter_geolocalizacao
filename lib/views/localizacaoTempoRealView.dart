@@ -1,9 +1,11 @@
 import 'dart:async';
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:flutter_geolocalizacao/models/geolocalizacao.dart';
 import 'package:flutter_geolocalizacao/helpers/geolocalizacaoHelper.dart';
-import 'package:intl/intl.dart';
+
+import '../helpers/geralHelper.dart';
 
 class LocalizacaoTempoRealView extends StatefulWidget {
   @override
@@ -41,31 +43,36 @@ class _LocalizacaoTempoRealViewState extends State<LocalizacaoTempoRealView> {
         centerTitle: true,
         backgroundColor: Colors.green,
       ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            _constroiConfiguracoes(),
-            _posicaoTempoRealStreamSubscription == null ? RaisedButton(color: Colors.green, child: Text("Iniciar"), onPressed: () => _iniciaLocalizacaoTempoReal()) : SizedBox.shrink(),
-            _posicaoTempoRealStreamSubscription != null
-                ? RaisedButton(
-                    color: _posicaoTempoRealStreamSubscription.isPaused ? Colors.green : Colors.orange[400],
-                    child: Text(_posicaoTempoRealStreamSubscription.isPaused ? "Retomar" : "Pausar"),
-                    onPressed: () => _retomaOuPausaLocalizacaoTempoReal(),
-                  )
-                : SizedBox.shrink(),
-            _posicaoTempoRealStreamSubscription != null
-                ? RaisedButton(
-                    color: Colors.red[700],
-                    child: Text("Resetar", style: TextStyle(color: Colors.white)),
-                    onPressed: () => _resetaLocalizacaoTempoReal(),
-                  )
-                : SizedBox.shrink(),
-            //_posicaoTempoRealStreamSubscription != null ? _constroiBlocoResultado() : SizedBox.shrink(),
-            _posicaoTempoRealStreamSubscription != null ? _constroiCabecalhoResultado() : SizedBox.shrink(),
-            _posicaoTempoRealStreamSubscription != null ? Expanded(child: _constroiListaResultadosTempoReal()) : SizedBox.shrink(),
-          ],
+      body: GestureDetector(
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              _constroiConfiguracoes(),
+              _posicaoTempoRealStreamSubscription == null ? RaisedButton(color: Colors.green, child: Text("Iniciar"), onPressed: () => _iniciaLocalizacaoTempoReal()) : SizedBox.shrink(),
+              _posicaoTempoRealStreamSubscription != null
+                  ? RaisedButton(
+                      color: _posicaoTempoRealStreamSubscription.isPaused ? Colors.green : Colors.orange[400],
+                      child: Text(_posicaoTempoRealStreamSubscription.isPaused ? "Retomar" : "Pausar"),
+                      onPressed: () => _retomaOuPausaLocalizacaoTempoReal(),
+                    )
+                  : SizedBox.shrink(),
+              _posicaoTempoRealStreamSubscription != null
+                  ? RaisedButton(
+                      color: Colors.red[700],
+                      child: Text("Resetar", style: TextStyle(color: Colors.white)),
+                      onPressed: () => _resetaLocalizacaoTempoReal(),
+                    )
+                  : SizedBox.shrink(),
+              //_posicaoTempoRealStreamSubscription != null ? _constroiBlocoResultado() : SizedBox.shrink(),
+              _posicaoTempoRealStreamSubscription != null ? _constroiCabecalhoResultado() : SizedBox.shrink(),
+              _posicaoTempoRealStreamSubscription != null ? Expanded(child: _constroiListaResultadosTempoReal()) : SizedBox.shrink(),
+            ],
+          ),
         ),
       ),
     );
@@ -134,6 +141,10 @@ class _LocalizacaoTempoRealViewState extends State<LocalizacaoTempoRealView> {
       itemBuilder: (context, indice) {
         double latitudeCapturada = _posicoesTempoReal[indice].latitude;
         double longitudeCapturada = _posicoesTempoReal[indice].longitude;
+        double velocidadeCapturadaKmh = GeralHelper.instancia.converteMpsParaKmh(_posicoesTempoReal[indice].speed);
+        velocidadeCapturadaKmh = velocidadeCapturadaKmh > 0 ? velocidadeCapturadaKmh : 0;
+        //double precisaoVelocidadeCapturada = _posicoesTempoReal[indice].speedAccuracy;
+        double altitudeCapturada = _posicoesTempoReal[indice].altitude;
 
         return GestureDetector(
           child: Container(
@@ -147,6 +158,9 @@ class _LocalizacaoTempoRealViewState extends State<LocalizacaoTempoRealView> {
                     Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[
                       Text("Latitude: $latitudeCapturada"),
                       Text("Longitude: $longitudeCapturada"),
+                      Text("Altitude: ${altitudeCapturada.toStringAsFixed(2)} metros"),
+                      Text("Velocidade: ${velocidadeCapturadaKmh.toStringAsFixed(2)} km/h"),
+                      //Text("Velocidade: ${velocidadeCapturadaKmh.toStringAsPrecision(2)} km/h    Precisão: $precisaoVelocidadeCapturada"),
                     ]),
                     Expanded(
                       child: Column(crossAxisAlignment: CrossAxisAlignment.end, mainAxisAlignment: MainAxisAlignment.start, children: <Widget>[

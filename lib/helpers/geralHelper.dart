@@ -88,4 +88,8 @@ class GeralHelper {
     } else
       return "";
   }
+
+  double converteMpsParaKmh(double metrosPorSegundo) {
+    return ((metrosPorSegundo ?? 0) * 60 * 60) / 1000;
+  }
 }
